@@ -33,6 +33,21 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 
 El `.exe` queda en `bin\Release\net8.0-windows\win-x64\publish\`.
 
+## Pruebas
+
+```
+cd RegistroEstudiantes.Tests
+dotnet test
+```
+
+40 casos sobre el repositorio y el modelo: altas, bajas, modificaciones,
+búsqueda, documento único y cálculo de edad. Corren en cualquier sistema
+operativo — no dependen de Windows Forms.
+
+Lo que **no** cubren: la interfaz. Que un botón esté bien posicionado o que la
+grilla se dibuje correctamente solo se verifica ejecutando la aplicación en
+Windows.
+
 ## Qué hace
 
 - Formulario con los datos básicos del estudiante (arriba)
@@ -57,6 +72,10 @@ RegistroEstudiantes/
 │   ├── FormPrincipal.cs           Lógica de la ventana
 │   └── FormPrincipal.Designer.cs  Diseño de la ventana
 └── Program.cs                     Punto de entrada
+
+RegistroEstudiantes.Tests/
+├── RepositorioMemoriaTests.cs     CRUD, búsqueda, documento único
+└── EstudianteTests.cs             Nombre completo y cálculo de edad
 ```
 
 ## Conectar la base de datos definitiva
