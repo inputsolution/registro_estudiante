@@ -56,7 +56,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Documento",
             DataPropertyName = nameof(Estudiante.Documento),
             FillWeight = 13,
-            MinimumWidth = 85
+            MinimumWidth = 105
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -65,7 +65,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Nombres",
             DataPropertyName = nameof(Estudiante.Nombres),
             FillWeight = 15,
-            MinimumWidth = 80
+            MinimumWidth = 100
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -74,7 +74,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Apellidos",
             DataPropertyName = nameof(Estudiante.Apellidos),
             FillWeight = 16,
-            MinimumWidth = 80
+            MinimumWidth = 100
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -83,7 +83,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Nacimiento",
             DataPropertyName = nameof(Estudiante.FechaNacimiento),
             FillWeight = 12,
-            MinimumWidth = 90,
+            MinimumWidth = 130,
             DefaultCellStyle = new DataGridViewCellStyle
             {
                 Format = "dd/MM/yyyy",
@@ -97,7 +97,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Edad",
             DataPropertyName = nameof(Estudiante.Edad),
             FillWeight = 6,
-            MinimumWidth = 50,
+            MinimumWidth = 64,
             DefaultCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -110,7 +110,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Grado",
             DataPropertyName = nameof(Estudiante.Grado),
             FillWeight = 7,
-            MinimumWidth = 55,
+            MinimumWidth = 70,
             DefaultCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -123,7 +123,7 @@ public partial class FormPrincipal : Form
             HeaderText = "Telefono",
             DataPropertyName = nameof(Estudiante.Telefono),
             FillWeight = 12,
-            MinimumWidth = 85
+            MinimumWidth = 105
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
