@@ -406,9 +406,21 @@ public partial class FormPrincipal : Form
             return false;
         }
 
+        if (!Validaciones.EsNombreValido(txtNombres.Text))
+        {
+            Advertir("Los nombres no admiten numeros ni signos.", txtNombres);
+            return false;
+        }
+
         if (string.IsNullOrWhiteSpace(txtApellidos.Text))
         {
             Advertir("Los apellidos son obligatorios.", txtApellidos);
+            return false;
+        }
+
+        if (!Validaciones.EsNombreValido(txtApellidos.Text))
+        {
+            Advertir("Los apellidos no admiten numeros ni signos.", txtApellidos);
             return false;
         }
 
@@ -418,10 +430,34 @@ public partial class FormPrincipal : Form
             return false;
         }
 
-        var email = txtEmail.Text.Trim();
-        if (email.Length > 0 && (!email.Contains('@') || !email.Contains('.')))
+        if (dtpFechaNacimiento.Value.Date < DateTime.Today.AddYears(-120))
         {
-            Advertir("El email no tiene un formato valido.", txtEmail);
+            Advertir("Revisa la fecha de nacimiento: la edad no es valida.", dtpFechaNacimiento);
+            return false;
+        }
+
+        if (!Validaciones.EsDocumentoValido(txtDocumento.Text))
+        {
+            Advertir(
+                "El documento solo admite letras y numeros, entre 5 y 20 caracteres.",
+                txtDocumento);
+            return false;
+        }
+
+        if (!Validaciones.EsTelefonoValido(txtTelefono.Text))
+        {
+            Advertir(
+                "El telefono solo admite numeros, espacios y los signos + ( ) -, " +
+                "con al menos 7 digitos.",
+                txtTelefono);
+            return false;
+        }
+
+        if (!Validaciones.EsEmailValido(txtEmail.Text))
+        {
+            Advertir(
+                "El email no tiene un formato valido. Ejemplo: nombre@dominio.com",
+                txtEmail);
             return false;
         }
 

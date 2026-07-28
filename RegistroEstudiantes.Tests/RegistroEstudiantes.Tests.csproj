@@ -26,6 +26,7 @@
        aplicacion. -->
   <ItemGroup>
     <Compile Include="../RegistroEstudiantes/Modelos/Estudiante.cs" />
+    <Compile Include="../RegistroEstudiantes/Modelos/Validaciones.cs" />
     <Compile Include="../RegistroEstudiantes/Datos/RepositorioMemoria.cs" />
   </ItemGroup>
 
