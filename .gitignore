@@ -4,3 +4,7 @@ obj/
 *.user
 *.suo
 TestResults/
+
+# Archivos temporales de Claude Code
+.claude/*.tmp.*
+.claude/settings.local.json
