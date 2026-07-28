@@ -212,11 +212,19 @@ partial class FormPrincipal
         grid.RowHeadersVisible = false;
         grid.BackgroundColor = SystemColors.Window;
         grid.BorderStyle = BorderStyle.FixedSingle;
-        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        grid.ColumnHeadersHeight = 26;
+        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         grid.RowTemplate.Height = 24;
-        grid.ScrollBars = ScrollBars.Vertical;
+        grid.ScrollBars = ScrollBars.Both;
         grid.AllowUserToResizeRows = false;
+
+        // Los encabezados se ajustan al ancho disponible en vez de recortarse,
+        // y el usuario puede ensanchar una columna si necesita ver mas texto.
+        grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(2, 0, 2, 0);
+        grid.AllowUserToResizeColumns = true;
+        grid.DefaultCellStyle.Padding = new Padding(2, 0, 2, 0);
+
         grid.SelectionChanged += Grid_SelectionChanged;
 
         // ---------- Barra de estado ----------

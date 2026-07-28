@@ -32,12 +32,16 @@ public partial class FormPrincipal : Form
     {
         grid.Columns.Clear();
 
+        // MinimumWidth evita que el modo Fill recorte el encabezado cuando la
+        // ventana es angosta: la columna deja de encogerse en ese ancho y, si
+        // hace falta, aparece la barra de desplazamiento horizontal.
         grid.Columns.Add(new DataGridViewTextBoxColumn
         {
             Name = "colDocumento",
             HeaderText = "Documento",
             DataPropertyName = nameof(Estudiante.Documento),
-            FillWeight = 13
+            FillWeight = 13,
+            MinimumWidth = 85
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -45,7 +49,8 @@ public partial class FormPrincipal : Form
             Name = "colNombres",
             HeaderText = "Nombres",
             DataPropertyName = nameof(Estudiante.Nombres),
-            FillWeight = 15
+            FillWeight = 15,
+            MinimumWidth = 80
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -53,16 +58,22 @@ public partial class FormPrincipal : Form
             Name = "colApellidos",
             HeaderText = "Apellidos",
             DataPropertyName = nameof(Estudiante.Apellidos),
-            FillWeight = 16
+            FillWeight = 16,
+            MinimumWidth = 80
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
         {
             Name = "colFechaNacimiento",
-            HeaderText = "F. nacimiento",
+            HeaderText = "Nacimiento",
             DataPropertyName = nameof(Estudiante.FechaNacimiento),
-            FillWeight = 11,
-            DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
+            FillWeight = 12,
+            MinimumWidth = 90,
+            DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Format = "dd/MM/yyyy",
+                Alignment = DataGridViewContentAlignment.MiddleCenter
+            }
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -70,7 +81,8 @@ public partial class FormPrincipal : Form
             Name = "colEdad",
             HeaderText = "Edad",
             DataPropertyName = nameof(Estudiante.Edad),
-            FillWeight = 5,
+            FillWeight = 6,
+            MinimumWidth = 50,
             DefaultCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -82,7 +94,12 @@ public partial class FormPrincipal : Form
             Name = "colGrado",
             HeaderText = "Grado",
             DataPropertyName = nameof(Estudiante.Grado),
-            FillWeight = 7
+            FillWeight = 7,
+            MinimumWidth = 55,
+            DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Alignment = DataGridViewContentAlignment.MiddleCenter
+            }
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -90,7 +107,8 @@ public partial class FormPrincipal : Form
             Name = "colTelefono",
             HeaderText = "Telefono",
             DataPropertyName = nameof(Estudiante.Telefono),
-            FillWeight = 12
+            FillWeight = 12,
+            MinimumWidth = 85
         });
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
@@ -98,7 +116,8 @@ public partial class FormPrincipal : Form
             Name = "colEmail",
             HeaderText = "Email",
             DataPropertyName = nameof(Estudiante.Email),
-            FillWeight = 21
+            FillWeight = 19,
+            MinimumWidth = 110
         });
     }
 
