@@ -1,0 +1,186 @@
+using Microsoft.Data.Sqlite;
+using RegistroEstudiantes.Modelos;
+
+namespace RegistroEstudiantes.Datos;
+
+/// <summary>
+/// Acceso a la base de datos SQLite. El archivo se crea junto al ejecutable
+/// la primera vez que se abre la aplicacion.
+/// </summary>
+public static class BaseDatos
+{
+    private static readonly string RutaArchivo =
+        Path.Combine(AppContext.BaseDirectory, "estudiantes.db");
+
+    private static string CadenaConexion => $"Data Source={RutaArchivo}";
+
+    /// <summary>
+    /// Crea la tabla si todavia no existe. Se llama al arrancar la aplicacion.
+    /// </summary>
+    public static void Inicializar()
+    {
+        using var conexion = new SqliteConnection(CadenaConexion);
+        conexion.Open();
+
+        using var comando = conexion.CreateCommand();
+        comando.CommandText = """
+            CREATE TABLE IF NOT EXISTS Estudiantes (
+                Id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                Documento        TEXT    NOT NULL UNIQUE,
+                Nombres          TEXT    NOT NULL,
+                Apellidos        TEXT    NOT NULL,
+                FechaNacimiento  TEXT    NOT NULL,
+                Telefono         TEXT    NOT NULL DEFAULT '',
+                Email            TEXT    NOT NULL DEFAULT '',
+                Direccion        TEXT    NOT NULL DEFAULT '',
+                Grado            TEXT    NOT NULL DEFAULT '',
+                FechaRegistro    TEXT    NOT NULL
+            );
+            """;
+        comando.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Devuelve los estudiantes, opcionalmente filtrados por documento,
+    /// nombres o apellidos.
+    /// </summary>
+    public static List<Estudiante> Listar(string filtro = "")
+    {
+        var lista = new List<Estudiante>();
+
+        using var conexion = new SqliteConnection(CadenaConexion);
+        conexion.Open();
+
+        using var comando = conexion.CreateCommand();
+
+        if (string.IsNullOrWhiteSpace(filtro))
+        {
+            comando.CommandText = "SELECT * FROM Estudiantes ORDER BY Apellidos, Nombres;";
+        }
+        else
+        {
+            comando.CommandText = """
+                SELECT * FROM Estudiantes
+                WHERE Documento LIKE $f OR Nombres LIKE $f OR Apellidos LIKE $f
+                ORDER BY Apellidos, Nombres;
+                """;
+            comando.Parameters.AddWithValue("$f", $"%{filtro.Trim()}%");
+        }
+
+        using var lector = comando.ExecuteReader();
+        while (lector.Read())
+        {
+            lista.Add(Mapear(lector));
+        }
+
+        return lista;
+    }
+
+    /// <summary>
+    /// Inserta un estudiante nuevo y devuelve el Id asignado.
+    /// </summary>
+    public static int Insertar(Estudiante e)
+    {
+        using var conexion = new SqliteConnection(CadenaConexion);
+        conexion.Open();
+
+        using var comando = conexion.CreateCommand();
+        comando.CommandText = """
+            INSERT INTO Estudiantes
+                (Documento, Nombres, Apellidos, FechaNacimiento,
+                 Telefono, Email, Direccion, Grado, FechaRegistro)
+            VALUES
+                ($doc, $nom, $ape, $fnac, $tel, $mail, $dir, $gra, $freg);
+            SELECT last_insert_rowid();
+            """;
+        AgregarParametros(comando, e);
+
+        return Convert.ToInt32(comando.ExecuteScalar());
+    }
+
+    /// <summary>
+    /// Actualiza los datos de un estudiante existente.
+    /// </summary>
+    public static void Actualizar(Estudiante e)
+    {
+        using var conexion = new SqliteConnection(CadenaConexion);
+        conexion.Open();
+
+        using var comando = conexion.CreateCommand();
+        comando.CommandText = """
+            UPDATE Estudiantes SET
+                Documento       = $doc,
+                Nombres         = $nom,
+                Apellidos       = $ape,
+                FechaNacimiento = $fnac,
+                Telefono        = $tel,
+                Email           = $mail,
+                Direccion       = $dir,
+                Grado           = $gra
+            WHERE Id = $id;
+            """;
+        AgregarParametros(comando, e);
+        comando.Parameters.AddWithValue("$id", e.Id);
+
+        comando.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Elimina un estudiante por Id.
+    /// </summary>
+    public static void Eliminar(int id)
+    {
+        using var conexion = new SqliteConnection(CadenaConexion);
+        conexion.Open();
+
+        using var comando = conexion.CreateCommand();
+        comando.CommandText = "DELETE FROM Estudiantes WHERE Id = $id;";
+        comando.Parameters.AddWithValue("$id", id);
+        comando.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Indica si ya existe otro estudiante con el mismo documento.
+    /// Se excluye <paramref name="idExcluir"/> para permitir editar sin falso positivo.
+    /// </summary>
+    public static bool ExisteDocumento(string documento, int idExcluir = 0)
+    {
+        using var conexion = new SqliteConnection(CadenaConexion);
+        conexion.Open();
+
+        using var comando = conexion.CreateCommand();
+        comando.CommandText =
+            "SELECT COUNT(*) FROM Estudiantes WHERE Documento = $doc AND Id <> $id;";
+        comando.Parameters.AddWithValue("$doc", documento.Trim());
+        comando.Parameters.AddWithValue("$id", idExcluir);
+
+        return Convert.ToInt32(comando.ExecuteScalar()) > 0;
+    }
+
+    private static void AgregarParametros(SqliteCommand comando, Estudiante e)
+    {
+        comando.Parameters.AddWithValue("$doc", e.Documento.Trim());
+        comando.Parameters.AddWithValue("$nom", e.Nombres.Trim());
+        comando.Parameters.AddWithValue("$ape", e.Apellidos.Trim());
+        comando.Parameters.AddWithValue("$fnac", e.FechaNacimiento.ToString("yyyy-MM-dd"));
+        comando.Parameters.AddWithValue("$tel", e.Telefono.Trim());
+        comando.Parameters.AddWithValue("$mail", e.Email.Trim());
+        comando.Parameters.AddWithValue("$dir", e.Direccion.Trim());
+        comando.Parameters.AddWithValue("$gra", e.Grado.Trim());
+        comando.Parameters.AddWithValue("$freg", e.FechaRegistro.ToString("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    private static Estudiante Mapear(SqliteDataReader lector) => new()
+    {
+        Id = lector.GetInt32(lector.GetOrdinal("Id")),
+        Documento = lector.GetString(lector.GetOrdinal("Documento")),
+        Nombres = lector.GetString(lector.GetOrdinal("Nombres")),
+        Apellidos = lector.GetString(lector.GetOrdinal("Apellidos")),
+        FechaNacimiento = DateTime.Parse(lector.GetString(lector.GetOrdinal("FechaNacimiento"))),
+        Telefono = lector.GetString(lector.GetOrdinal("Telefono")),
+        Email = lector.GetString(lector.GetOrdinal("Email")),
+        Direccion = lector.GetString(lector.GetOrdinal("Direccion")),
+        Grado = lector.GetString(lector.GetOrdinal("Grado")),
+        FechaRegistro = DateTime.Parse(lector.GetString(lector.GetOrdinal("FechaRegistro")))
+    };
+}

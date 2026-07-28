@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>RegistroEstudiantes</RootNamespace>
+    <AssemblyName>RegistroEstudiantes</AssemblyName>
+    <ApplicationDefaultFont>Segoe UI, 9pt</ApplicationDefaultFont>
+
+    <!-- Permite compilar el proyecto desde macOS/Linux para verificar el codigo.
+         La aplicacion se EJECUTA unicamente en Windows.
+         En Windows esta linea es inofensiva; puede dejarse o quitarse. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <!-- La maqueta trabaja en memoria. Al definir la base de datos definitiva
+       se agrega aqui el paquete correspondiente (Microsoft.Data.SqlClient
+       para SQL Server). -->
+
+  <ItemGroup>
+    <Compile Remove="Datos\*.pendiente" />
+    <None Include="Datos\*.pendiente" />
+  </ItemGroup>
+
+</Project>
