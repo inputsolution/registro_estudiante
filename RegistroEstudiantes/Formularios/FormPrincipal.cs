@@ -15,6 +15,21 @@ public partial class FormPrincipal : Form
     /// </summary>
     private bool _cargandoGrilla;
 
+    /// <summary>
+    /// Pagina que se esta mostrando, empezando en 1.
+    /// </summary>
+    private int _paginaActual = 1;
+
+    /// <summary>
+    /// Cantidad de paginas del filtro vigente. Siempre al menos 1.
+    /// </summary>
+    private int _totalPaginas = 1;
+
+    /// <summary>
+    /// Registros por pagina. Coincide con el primer valor del desplegable.
+    /// </summary>
+    private int _filasPorPagina = 10;
+
     public FormPrincipal()
     {
         InitializeComponent();
@@ -121,19 +136,92 @@ public partial class FormPrincipal : Form
         });
     }
 
+    /// <summary>
+    /// Recarga la grilla con la pagina actual del filtro vigente.
+    /// </summary>
     private void RefrescarGrilla()
     {
+        var todos = RepositorioMemoria.Listar(txtBuscar.Text);
+
+        _totalPaginas = Math.Max(1, (int)Math.Ceiling(todos.Count / (double)_filasPorPagina));
+        _paginaActual = Math.Clamp(_paginaActual, 1, _totalPaginas);
+
+        var pagina = todos
+            .Skip((_paginaActual - 1) * _filasPorPagina)
+            .Take(_filasPorPagina)
+            .ToList();
+
         _cargandoGrilla = true;
-
-        var lista = RepositorioMemoria.Listar(txtBuscar.Text);
-        grid.DataSource = lista;
+        grid.DataSource = pagina;
         grid.ClearSelection();
-
         _cargandoGrilla = false;
 
-        lblEstado.Text = lista.Count == 1
+        ActualizarPaginacion(todos.Count, pagina.Count);
+    }
+
+    /// <summary>
+    /// Ajusta los controles de paginacion y el texto de la barra de estado.
+    /// </summary>
+    private void ActualizarPaginacion(int totalRegistros, int enEstaPagina)
+    {
+        lblPagina.Text = $"Pagina {_paginaActual} de {_totalPaginas}";
+
+        btnPrimera.Enabled = _paginaActual > 1;
+        btnAnterior.Enabled = _paginaActual > 1;
+        btnSiguiente.Enabled = _paginaActual < _totalPaginas;
+        btnUltima.Enabled = _paginaActual < _totalPaginas;
+
+        if (totalRegistros == 0)
+        {
+            lblEstado.Text = string.IsNullOrWhiteSpace(txtBuscar.Text)
+                ? "Sin estudiantes registrados"
+                : "La busqueda no arrojo resultados";
+            return;
+        }
+
+        var desde = ((_paginaActual - 1) * _filasPorPagina) + 1;
+        var hasta = desde + enEstaPagina - 1;
+
+        lblEstado.Text = totalRegistros == 1
             ? "1 estudiante"
-            : $"{lista.Count} estudiantes";
+            : $"Mostrando {desde}-{hasta} de {totalRegistros} estudiantes";
+    }
+
+    private void IrAPagina(int pagina)
+    {
+        _paginaActual = pagina;
+        RefrescarGrilla();
+    }
+
+    /// <summary>
+    /// Calcula en que pagina quedo un registro despues de ordenar la lista
+    /// completa, para poder mostrarselo al usuario tras guardarlo.
+    /// </summary>
+    private int PaginaDe(string documento)
+    {
+        var posicion = RepositorioMemoria.Listar()
+            .FindIndex(e => e.Documento.Equals(documento.Trim(), StringComparison.OrdinalIgnoreCase));
+
+        return posicion < 0
+            ? _paginaActual
+            : (posicion / _filasPorPagina) + 1;
+    }
+
+    private void BtnPrimera_Click(object? sender, EventArgs e) => IrAPagina(1);
+
+    private void BtnAnterior_Click(object? sender, EventArgs e) => IrAPagina(_paginaActual - 1);
+
+    private void BtnSiguiente_Click(object? sender, EventArgs e) => IrAPagina(_paginaActual + 1);
+
+    private void BtnUltima_Click(object? sender, EventArgs e) => IrAPagina(_totalPaginas);
+
+    private void CboPorPagina_SelectedIndexChanged(object? sender, EventArgs e)
+    {
+        if (int.TryParse(cboPorPagina.SelectedItem?.ToString(), out var filas))
+        {
+            _filasPorPagina = filas;
+            IrAPagina(1);
+        }
     }
 
     private void Grid_SelectionChanged(object? sender, EventArgs e)
@@ -178,19 +266,31 @@ public partial class FormPrincipal : Form
             Grado = txtGrado.Text
         };
 
-        if (_idEnEdicion == 0)
+        var esNuevo = _idEnEdicion == 0;
+
+        if (esNuevo)
         {
             RepositorioMemoria.Insertar(estudiante);
-            lblEstado.Text = "Estudiante guardado";
         }
         else
         {
             RepositorioMemoria.Actualizar(estudiante);
-            lblEstado.Text = "Estudiante actualizado";
         }
 
+        // Se limpia el buscador para que el registro guardado no quede oculto
+        // tras un filtro que no lo incluya.
+        if (txtBuscar.Text.Length > 0)
+        {
+            _cargandoGrilla = true;
+            txtBuscar.Clear();
+            _cargandoGrilla = false;
+        }
+
+        _paginaActual = PaginaDe(estudiante.Documento);
         RefrescarGrilla();
         LimpiarFormulario();
+
+        lblEstado.Text = esNuevo ? "Estudiante guardado" : "Estudiante actualizado";
     }
 
     private void BtnNuevo_Click(object? sender, EventArgs e)
@@ -224,6 +324,9 @@ public partial class FormPrincipal : Form
         }
 
         RepositorioMemoria.Eliminar(_idEnEdicion);
+
+        // Si se elimino el unico registro de la ultima pagina, RefrescarGrilla
+        // ajusta la pagina actual para no dejarla vacia.
         RefrescarGrilla();
         LimpiarFormulario();
         lblEstado.Text = "Estudiante eliminado";
@@ -231,7 +334,9 @@ public partial class FormPrincipal : Form
 
     private void TxtBuscar_TextChanged(object? sender, EventArgs e)
     {
-        RefrescarGrilla();
+        // Un filtro nuevo puede dejar menos paginas que la actual, asi que se
+        // vuelve al principio.
+        IrAPagina(1);
     }
 
     private bool Validar()

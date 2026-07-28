@@ -29,6 +29,16 @@ partial class FormPrincipal
     private Label lblBuscar;
     private TextBox txtBuscar;
     private DataGridView grid;
+
+    private Panel panelPaginacion;
+    private Button btnPrimera;
+    private Button btnAnterior;
+    private Label lblPagina;
+    private Button btnSiguiente;
+    private Button btnUltima;
+    private Label lblPorPagina;
+    private ComboBox cboPorPagina;
+
     private StatusStrip barraEstado;
     private ToolStripStatusLabel lblEstado;
 
@@ -68,10 +78,19 @@ partial class FormPrincipal
         lblBuscar = new Label();
         txtBuscar = new TextBox();
         grid = new DataGridView();
+        panelPaginacion = new Panel();
+        btnPrimera = new Button();
+        btnAnterior = new Button();
+        lblPagina = new Label();
+        btnSiguiente = new Button();
+        btnUltima = new Button();
+        lblPorPagina = new Label();
+        cboPorPagina = new ComboBox();
         barraEstado = new StatusStrip();
         lblEstado = new ToolStripStatusLabel();
 
         grupoDatos.SuspendLayout();
+        panelPaginacion.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)grid).BeginInit();
         barraEstado.SuspendLayout();
         SuspendLayout();
@@ -199,8 +218,9 @@ partial class FormPrincipal
         txtBuscar.TextChanged += TxtBuscar_TextChanged;
 
         // ---------- Grilla ----------
+        // Se reserva el espacio inferior para la barra de paginacion.
         grid.Location = new Point(12, 220);
-        grid.Size = new Size(860, 300);
+        grid.Size = new Size(860, 264);
         grid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         grid.AllowUserToAddRows = false;
         grid.AllowUserToDeleteRows = false;
@@ -227,6 +247,57 @@ partial class FormPrincipal
 
         grid.SelectionChanged += Grid_SelectionChanged;
 
+        // ---------- Barra de paginacion ----------
+        panelPaginacion.Location = new Point(12, 490);
+        panelPaginacion.Size = new Size(860, 32);
+        panelPaginacion.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+        btnPrimera.Text = "|<";
+        btnPrimera.Location = new Point(0, 2);
+        btnPrimera.Size = new Size(34, 26);
+        btnPrimera.Click += BtnPrimera_Click;
+
+        btnAnterior.Text = "<";
+        btnAnterior.Location = new Point(38, 2);
+        btnAnterior.Size = new Size(34, 26);
+        btnAnterior.Click += BtnAnterior_Click;
+
+        lblPagina.Text = "Pagina 1 de 1";
+        lblPagina.Location = new Point(78, 2);
+        lblPagina.Size = new Size(170, 26);
+        lblPagina.TextAlign = ContentAlignment.MiddleCenter;
+
+        btnSiguiente.Text = ">";
+        btnSiguiente.Location = new Point(254, 2);
+        btnSiguiente.Size = new Size(34, 26);
+        btnSiguiente.Click += BtnSiguiente_Click;
+
+        btnUltima.Text = ">|";
+        btnUltima.Location = new Point(292, 2);
+        btnUltima.Size = new Size(34, 26);
+        btnUltima.Click += BtnUltima_Click;
+
+        // Anclado a la derecha para que acompañe el borde al redimensionar.
+        lblPorPagina.Text = "Filas por pagina:";
+        lblPorPagina.Location = new Point(690, 2);
+        lblPorPagina.Size = new Size(105, 26);
+        lblPorPagina.TextAlign = ContentAlignment.MiddleRight;
+        lblPorPagina.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+        cboPorPagina.Location = new Point(800, 4);
+        cboPorPagina.Size = new Size(60, 25);
+        cboPorPagina.DropDownStyle = ComboBoxStyle.DropDownList;
+        cboPorPagina.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        cboPorPagina.Items.AddRange(new object[] { "10", "25", "50", "100" });
+        cboPorPagina.SelectedIndex = 0;
+        cboPorPagina.SelectedIndexChanged += CboPorPagina_SelectedIndexChanged;
+
+        panelPaginacion.Controls.AddRange(new Control[]
+        {
+            btnPrimera, btnAnterior, lblPagina, btnSiguiente, btnUltima,
+            lblPorPagina, cboPorPagina
+        });
+
         // ---------- Barra de estado ----------
         lblEstado.Text = "Listo";
         barraEstado.Items.Add(lblEstado);
@@ -237,13 +308,17 @@ partial class FormPrincipal
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(884, 552);
         MinimumSize = new Size(900, 590);
-        Controls.AddRange(new Control[] { grupoDatos, lblBuscar, txtBuscar, grid, barraEstado });
+        Controls.AddRange(new Control[]
+        {
+            grupoDatos, lblBuscar, txtBuscar, grid, panelPaginacion, barraEstado
+        });
         StartPosition = FormStartPosition.CenterScreen;
         Text = "Registro de Estudiantes";
         Load += FormPrincipal_Load;
 
         grupoDatos.ResumeLayout(false);
         grupoDatos.PerformLayout();
+        panelPaginacion.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)grid).EndInit();
         barraEstado.ResumeLayout(false);
         ResumeLayout(false);
