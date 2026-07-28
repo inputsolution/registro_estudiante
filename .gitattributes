@@ -1,0 +1,8 @@
+# Normaliza los finales de linea al clonar en Windows, para que el codigo no
+# aparezca en una sola linea en el editor.
+* text=auto
+
+*.cs      text diff=csharp
+*.csproj  text
+*.sln     text eol=crlf
+*.md      text

@@ -8,19 +8,29 @@ definitiva (SQL Server) se conecta en el siguiente paso.
 
 ## Cómo ejecutarla en Windows
 
-Requiere el [SDK de .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0)
-(o Visual Studio 2022, que ya lo incluye).
+Requiere **.NET 8**. Visual Studio 2022 lo incluye si se marca la carga de
+trabajo **"Desarrollo de escritorio de .NET"** durante la instalación. Sin esa
+carga de trabajo el proyecto abre pero no compila.
 
-**Opción A — línea de comandos:**
+Sin Visual Studio, basta el [SDK de .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0).
+
+**Opción A — Visual Studio 2022:**
+
+Abrir `RegistroEstudiantes.sln` (no el `.csproj`) y presionar F5.
+
+La solución contiene dos proyectos. Si F5 arranca el equivocado, clic derecho
+sobre **RegistroEstudiantes** → *Establecer como proyecto de inicio*.
+
+**Opción B — línea de comandos:**
 
 ```
 cd RegistroEstudiantes
 dotnet run
 ```
 
-**Opción B — Visual Studio:**
-
-Abrir `RegistroEstudiantes.sln` y presionar F5.
+**Versiones anteriores de Visual Studio no sirven.** VS 2012 llega hasta .NET
+Framework 4.5 y VS 2019 hasta .NET 5; ninguna reconoce el formato de proyecto
+que usa .NET 8.
 
 ## Generar un .exe portable
 
