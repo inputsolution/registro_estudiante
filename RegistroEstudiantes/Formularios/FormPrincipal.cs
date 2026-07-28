@@ -43,6 +43,39 @@ public partial class FormPrincipal : Form
         LimpiarFormulario();
     }
 
+    /// <summary>
+    /// Al mover la ventana a un monitor con otro escalado, las fuentes cambian
+    /// de tamaño y los anchos minimos deben recalcularse.
+    /// </summary>
+    protected override void OnDpiChanged(DpiChangedEventArgs e)
+    {
+        base.OnDpiChanged(e);
+        AjustarAnchosMinimos();
+    }
+
+    /// <summary>
+    /// Ajusta un ancho en pixeles al escalado de pantalla de Windows. Con el
+    /// sistema al 125% o 150% las fuentes crecen, y un ancho fijo recortaria
+    /// el titulo.
+    /// </summary>
+    private int Escalar(int pixeles) =>
+        (int)Math.Ceiling(pixeles * (DeviceDpi / 96.0));
+
+    /// <summary>
+    /// Ancho que necesita un titulo de columna para verse completo, medido con
+    /// la fuente real del encabezado mas el espacio interno y el margen que
+    /// deja el propio DataGridView.
+    /// </summary>
+    private int AnchoDelTitulo(string titulo)
+    {
+        var fuente = grid.ColumnHeadersDefaultCellStyle.Font ?? Font;
+        var medido = TextRenderer.MeasureText(titulo, fuente);
+        var relleno = grid.ColumnHeadersDefaultCellStyle.Padding;
+
+        // El margen extra cubre el borde de la celda y el glifo de ordenamiento.
+        return medido.Width + relleno.Horizontal + Escalar(12);
+    }
+
     private void ConfigurarColumnas()
     {
         grid.Columns.Clear();
@@ -134,6 +167,26 @@ public partial class FormPrincipal : Form
             FillWeight = 19,
             MinimumWidth = 110
         });
+
+        AjustarAnchosMinimos();
+    }
+
+    /// <summary>
+    /// Garantiza que ninguna columna pueda encogerse por debajo de lo que mide
+    /// su propio titulo. Los valores escritos a mano son solo un punto de
+    /// partida; aqui se corrigen con la medida real de la fuente en uso.
+    /// </summary>
+    private void AjustarAnchosMinimos()
+    {
+        foreach (DataGridViewColumn columna in grid.Columns)
+        {
+            var necesario = AnchoDelTitulo(columna.HeaderText);
+
+            if (columna.MinimumWidth < necesario)
+            {
+                columna.MinimumWidth = necesario;
+            }
+        }
     }
 
     /// <summary>

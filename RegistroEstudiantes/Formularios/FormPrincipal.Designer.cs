@@ -232,16 +232,22 @@ partial class FormPrincipal
         grid.RowHeadersVisible = false;
         grid.BackgroundColor = SystemColors.Window;
         grid.BorderStyle = BorderStyle.FixedSingle;
-        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        // AutoSize calcula la altura del encabezado antes de que las columnas
+        // tomen su ancho definitivo, y el titulo termina recortado. Con una
+        // altura fija el texto siempre cabe.
+        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+        grid.ColumnHeadersHeight = 34;
         grid.RowTemplate.Height = 26;
         grid.ScrollBars = ScrollBars.Both;
         grid.AllowUserToResizeRows = false;
 
         // Espacio interno amplio para que los titulos no queden pegados a las
         // lineas divisorias, que es lo que hacia dificil leerlos.
-        grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        // Sin WrapMode: con la altura fija, envolver el texto es justamente lo
+        // que lo parte en dos lineas y lo hace ver cortado.
+        grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
         grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 6, 8, 6);
+        grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 4, 6, 4);
         grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         grid.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
         grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = SystemColors.Control;
