@@ -16,9 +16,17 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
-  <!-- La maqueta trabaja en memoria. Al definir la base de datos definitiva
-       se agrega aqui el paquete correspondiente (Microsoft.Data.SqlClient
-       para SQL Server). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+  </ItemGroup>
+
+  <!-- La cadena de conexion viaja junto al ejecutable para poder cambiarla
+       sin recompilar. -->
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Datos\*.pendiente" />

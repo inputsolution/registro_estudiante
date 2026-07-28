@@ -3,12 +3,12 @@ using RegistroEstudiantes.Modelos;
 namespace RegistroEstudiantes.Datos;
 
 /// <summary>
-/// Almacenamiento temporal en memoria para la maqueta.
-/// Los datos se pierden al cerrar la aplicacion.
+/// Almacenamiento en memoria, equivalente a RepositorioSqlServer pero sin
+/// base de datos.
 ///
-/// Cuando se decida la base de datos definitiva (SQL Server), basta con
-/// reemplazar el cuerpo de estos metodos por las consultas correspondientes;
-/// la interfaz publica no cambia y el formulario sigue funcionando igual.
+/// La aplicacion ya no lo usa: quedo como referencia de la interfaz y, sobre
+/// todo, para las pruebas, que se ejecutan en cualquier sistema operativo y
+/// sin necesidad de un SQL Server disponible.
 /// </summary>
 public static class RepositorioMemoria
 {

@@ -2,9 +2,33 @@
 
 Aplicación de escritorio (Windows Forms, .NET 8) para registrar estudiantes.
 
-**Estado actual: maqueta.** La interfaz está completa y funcional, pero los datos
-se guardan en memoria — al cerrar la aplicación se pierden. La base de datos
-definitiva (SQL Server) se conecta en el siguiente paso.
+Los datos se guardan en **SQL Server**.
+
+## Puesta en marcha
+
+**1. Crear la base de datos.** Abrir `scripts/01_crear_base_datos.sql` en SQL
+Server Management Studio y ejecutarlo una vez. Crea la base, la tabla y 12
+estudiantes de ejemplo. Se puede volver a ejecutar sin duplicar nada.
+
+**2. Revisar la conexión.** Está en `RegistroEstudiantes/appsettings.json`:
+
+```json
+"SqlServer": "Server=.;Database=RegistroEstudiantes;Trusted_Connection=True;TrustServerCertificate=True;"
+```
+
+`Server=.` es la instancia local por defecto. Otras opciones comunes:
+
+| Instancia | Valor |
+|---|---|
+| SQL Server Express | `.\SQLEXPRESS` |
+| LocalDB de Visual Studio | `(localdb)\MSSQLLocalDB` |
+| Servidor en la red | `NOMBRE-PC\INSTANCIA` |
+
+`Trusted_Connection=True` usa la cuenta de Windows, sin usuario ni contraseña.
+Para autenticación SQL, reemplazar por `User Id=usuario;Password=clave;`.
+
+El archivo se copia junto al ejecutable, así que se puede cambiar el servidor
+sin recompilar.
 
 ## Cómo ejecutarla en Windows
 
@@ -50,9 +74,9 @@ cd RegistroEstudiantes.Tests
 dotnet test
 ```
 
-40 casos sobre el repositorio y el modelo: altas, bajas, modificaciones,
-búsqueda, documento único y cálculo de edad. Corren en cualquier sistema
-operativo — no dependen de Windows Forms.
+135 casos sobre el repositorio, el modelo, las validaciones y la paginación.
+Corren en cualquier sistema operativo y **no necesitan SQL Server**: usan el
+repositorio en memoria, que expone la misma interfaz.
 
 Lo que **no** cubren: la interfaz. Que un botón esté bien posicionado o que la
 grilla se dibuje correctamente solo se verifica ejecutando la aplicación en
@@ -64,19 +88,26 @@ Windows.
 - Grilla con todos los registros (abajo)
 - Guardar, actualizar y eliminar
 - Búsqueda en vivo por documento, nombres o apellidos
-- Validaciones: campos obligatorios, documento no repetido, fecha no futura,
-  formato de email
+- Paginación con selector de 10, 25, 50 o 100 filas por página
+- Validaciones: campos obligatorios, documento único, fecha coherente, y
+  formato de email, teléfono, documento y nombres
 - Al seleccionar una fila, sus datos se cargan en el formulario para editar
-- Arranca con 2 registros de ejemplo para ver la grilla con contenido
 
 ## Estructura
 
 ```
+scripts/
+└── 01_crear_base_datos.sql        Crea base, tabla y datos de ejemplo
+
 RegistroEstudiantes/
+├── appsettings.json               Cadena de conexión
 ├── Modelos/
-│   └── Estudiante.cs              Datos del estudiante
+│   ├── Estudiante.cs              Datos del estudiante
+│   └── Validaciones.cs            Reglas de los campos
 ├── Datos/
-│   ├── RepositorioMemoria.cs      Almacenamiento temporal (maqueta)
+│   ├── RepositorioSqlServer.cs    Acceso a SQL Server (el que usa la app)
+│   ├── Configuracion.cs           Lectura de appsettings.json
+│   ├── RepositorioMemoria.cs      Equivalente sin base de datos, para pruebas
 │   └── BaseDatos.cs.sqlite-pendiente   Versión SQLite, sin usar
 ├── Formularios/
 │   ├── FormPrincipal.cs           Lógica de la ventana
@@ -85,10 +116,13 @@ RegistroEstudiantes/
 
 RegistroEstudiantes.Tests/
 ├── RepositorioMemoriaTests.cs     CRUD, búsqueda, documento único
-└── EstudianteTests.cs             Nombre completo y cálculo de edad
+├── ValidacionesTests.cs           Email, documento, teléfono, nombres
+├── PaginacionTests.cs             Cálculo de páginas y rangos
+├── EstudianteTests.cs             Nombre completo y cálculo de edad
+└── InterfazRepositoriosTests.cs   Firma común de los repositorios
 ```
 
-## Conectar la base de datos definitiva
+## Cambiar de motor de base de datos
 
 `RepositorioMemoria` expone estos métodos:
 
@@ -100,13 +134,13 @@ void Eliminar(int id)
 bool ExisteDocumento(string documento, int idExcluir = 0)
 ```
 
-Para pasar a SQL Server se crea una clase con esos mismos métodos, se agrega el
-paquete `Microsoft.Data.SqlClient` al `.csproj` y se cambian las llamadas en
-`FormPrincipal.cs`. El resto del formulario no se toca.
+`RepositorioSqlServer` implementa esos métodos contra SQL Server y es el que
+usa la aplicación. `RepositorioMemoria` mantiene la misma forma sin base de
+datos, y es lo que ejecutan las pruebas.
 
-El archivo `BaseDatos.cs.sqlite-pendiente` ya tiene esa misma interfaz
-implementada contra SQLite, por si se prefiere esa opción (no requiere instalar
-nada en la máquina donde corre).
+El archivo `BaseDatos.cs.sqlite-pendiente` tiene la misma interfaz contra
+SQLite, por si alguna vez conviene una opción que no requiera instalar nada en
+la máquina donde corre.
 
 ## Nota
 

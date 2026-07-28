@@ -38,7 +38,6 @@ public partial class FormPrincipal : Form
     private void FormPrincipal_Load(object? sender, EventArgs e)
     {
         ConfigurarColumnas();
-        RepositorioMemoria.CargarEjemplos();
         RefrescarGrilla();
         LimpiarFormulario();
     }
@@ -194,7 +193,18 @@ public partial class FormPrincipal : Form
     /// </summary>
     private void RefrescarGrilla()
     {
-        var todos = RepositorioMemoria.Listar(txtBuscar.Text);
+        List<Estudiante> todos;
+
+        try
+        {
+            todos = RepositorioSqlServer.Listar(txtBuscar.Text);
+        }
+        catch (Exception ex)
+        {
+            MostrarErrorDeBaseDatos("No se pudo consultar la lista de estudiantes.", ex);
+            todos = new List<Estudiante>();
+        }
+
 
         _totalPaginas = Math.Max(1, (int)Math.Ceiling(todos.Count / (double)_filasPorPagina));
         _paginaActual = Math.Clamp(_paginaActual, 1, _totalPaginas);
@@ -252,7 +262,7 @@ public partial class FormPrincipal : Form
     /// </summary>
     private int PaginaDe(string documento)
     {
-        var posicion = RepositorioMemoria.Listar()
+        var posicion = RepositorioSqlServer.Listar()
             .FindIndex(e => e.Documento.Equals(documento.Trim(), StringComparison.OrdinalIgnoreCase));
 
         return posicion < 0
@@ -321,13 +331,27 @@ public partial class FormPrincipal : Form
 
         var esNuevo = _idEnEdicion == 0;
 
-        if (esNuevo)
+        try
         {
-            RepositorioMemoria.Insertar(estudiante);
+            if (esNuevo)
+            {
+                RepositorioSqlServer.Insertar(estudiante);
+            }
+            else
+            {
+                RepositorioSqlServer.Actualizar(estudiante);
+            }
         }
-        else
+        catch (InvalidOperationException ex)
         {
-            RepositorioMemoria.Actualizar(estudiante);
+            // Documento duplicado detectado por la restriccion de la tabla.
+            Advertir(ex.Message, txtDocumento);
+            return;
+        }
+        catch (Exception ex)
+        {
+            MostrarErrorDeBaseDatos("No se pudo guardar el estudiante.", ex);
+            return;
         }
 
         // Se limpia el buscador para que el registro guardado no quede oculto
@@ -376,7 +400,15 @@ public partial class FormPrincipal : Form
             return;
         }
 
-        RepositorioMemoria.Eliminar(_idEnEdicion);
+        try
+        {
+            RepositorioSqlServer.Eliminar(_idEnEdicion);
+        }
+        catch (Exception ex)
+        {
+            MostrarErrorDeBaseDatos("No se pudo eliminar el estudiante.", ex);
+            return;
+        }
 
         // Si se elimino el unico registro de la ultima pagina, RefrescarGrilla
         // ajusta la pagina actual para no dejarla vacia.
@@ -461,9 +493,17 @@ public partial class FormPrincipal : Form
             return false;
         }
 
-        if (RepositorioMemoria.ExisteDocumento(txtDocumento.Text, _idEnEdicion))
+        try
         {
-            Advertir("Ya existe un estudiante con ese documento.", txtDocumento);
+            if (RepositorioSqlServer.ExisteDocumento(txtDocumento.Text, _idEnEdicion))
+            {
+                Advertir("Ya existe un estudiante con ese documento.", txtDocumento);
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            MostrarErrorDeBaseDatos("No se pudo verificar el documento.", ex);
             return false;
         }
 
@@ -474,6 +514,24 @@ public partial class FormPrincipal : Form
     {
         MessageBox.Show(mensaje, "Validacion", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         foco.Focus();
+    }
+
+    /// <summary>
+    /// Informa de un fallo al hablar con SQL Server, indicando donde se
+    /// configura el servidor para que el usuario pueda corregirlo.
+    /// </summary>
+    private void MostrarErrorDeBaseDatos(string queFallo, Exception ex)
+    {
+        MessageBox.Show(
+            $"{queFallo}\n\n" +
+            $"Detalle: {ex.Message}\n\n" +
+            $"Revisa que SQL Server este encendido y que la cadena de conexion " +
+            $"sea correcta en:\n{Configuracion.RutaArchivo}",
+            "Error de base de datos",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error);
+
+        lblEstado.Text = "Sin conexion con la base de datos";
     }
 
     private void LimpiarFormulario()
