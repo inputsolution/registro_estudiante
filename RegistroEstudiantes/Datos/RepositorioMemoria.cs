@@ -16,6 +16,16 @@ public static class RepositorioMemoria
     private static int _siguienteId = 1;
 
     /// <summary>
+    /// Vacia el almacenamiento. Usado por las pruebas para partir de un estado
+    /// conocido en cada caso.
+    /// </summary>
+    public static void Limpiar()
+    {
+        Datos.Clear();
+        _siguienteId = 1;
+    }
+
+    /// <summary>
     /// Carga unos registros de ejemplo para poder ver la grilla con contenido.
     /// </summary>
     public static void CargarEjemplos()
