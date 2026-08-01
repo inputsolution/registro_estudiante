@@ -34,8 +34,9 @@ public class PaginacionTests
                 Documento = $"DOC{i:D4}",
                 Nombres = $"Nombre{i:D3}",
                 Apellidos = $"Apellido{i:D3}",
-                FechaNacimiento = new DateTime(2010, 1, 1),
-                Grado = "7A"
+                FechaNacimiento = new DateTime(2002, 1, 1),
+                Carrera = "Ingenieria de Sistemas",
+                Semestre = 5
             });
         }
     }

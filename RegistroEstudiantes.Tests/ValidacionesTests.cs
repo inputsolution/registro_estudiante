@@ -159,6 +159,64 @@ public class ValidacionesTests
         Assert.False(Validaciones.EsNombreValido(new string('a', 61)));
     }
 
+    // ---------- Carrera ----------
+
+    [Theory]
+    [InlineData("Medicina")]
+    [InlineData("Ingenieria de Sistemas")]
+    [InlineData("Diseño Grafico")]
+    [InlineData("Administracion de Empresas - Nocturna")]
+    [InlineData("Lic. en Educacion")]
+    public void Carrera_ValoresValidos_SeAceptan(string carrera)
+    {
+        Assert.True(Validaciones.EsCarreraValida(carrera));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData(null)]
+    [InlineData("IS")]              // muy corta
+    [InlineData("Ingenieria 2")]    // con numero
+    [InlineData("Medicina@UNAL")]   // con simbolo
+    public void Carrera_ValoresInvalidos_SeRechazan(string? carrera)
+    {
+        Assert.False(Validaciones.EsCarreraValida(carrera));
+    }
+
+    [Fact]
+    public void Carrera_DemasiadoLarga_SeRechaza()
+    {
+        Assert.False(Validaciones.EsCarreraValida(new string('a', 81)));
+    }
+
+    [Fact]
+    public void Carrera_IgnoraEspaciosAlrededor()
+    {
+        Assert.True(Validaciones.EsCarreraValida("  Medicina  "));
+    }
+
+    // ---------- Semestre ----------
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(12)]
+    public void Semestre_DentroDelRango_SeAcepta(int semestre)
+    {
+        Assert.True(Validaciones.EsSemestreValido(semestre));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(13)]
+    [InlineData(100)]
+    public void Semestre_FueraDelRango_SeRechaza(int semestre)
+    {
+        Assert.False(Validaciones.EsSemestreValido(semestre));
+    }
+
     // ---------- Los datos de ejemplo cumplen las reglas ----------
 
     [Fact]
@@ -173,6 +231,8 @@ public class ValidacionesTests
             Assert.True(Validaciones.EsNombreValido(e.Apellidos), $"Apellidos: {e.Apellidos}");
             Assert.True(Validaciones.EsTelefonoValido(e.Telefono), $"Telefono: {e.Telefono}");
             Assert.True(Validaciones.EsEmailValido(e.Email), $"Email: {e.Email}");
+            Assert.True(Validaciones.EsCarreraValida(e.Carrera), $"Carrera: {e.Carrera}");
+            Assert.True(Validaciones.EsSemestreValido(e.Semestre), $"Semestre: {e.Semestre}");
         }
     }
 }

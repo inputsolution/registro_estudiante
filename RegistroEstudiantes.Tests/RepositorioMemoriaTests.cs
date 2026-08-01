@@ -23,16 +23,18 @@ public class RepositorioMemoriaTests
         string documento = "1000000001",
         string nombres = "Pedro",
         string apellidos = "Ramirez Soto",
-        string grado = "7A") => new()
+        string carrera = "Ingenieria de Sistemas",
+        int semestre = 5) => new()
         {
             Documento = documento,
             Nombres = nombres,
             Apellidos = apellidos,
-            FechaNacimiento = new DateTime(2010, 5, 20),
+            FechaNacimiento = new DateTime(2003, 5, 20),
             Telefono = "3001234567",
             Email = "pedro.ramirez@ejemplo.com",
             Direccion = "Calle 1 # 2-3",
-            Grado = grado
+            Carrera = carrera,
+            Semestre = semestre
         };
 
     // ---------- Crear ----------
@@ -57,11 +59,12 @@ public class RepositorioMemoriaTests
         Assert.Equal("1000000001", guardado.Documento);
         Assert.Equal("Pedro", guardado.Nombres);
         Assert.Equal("Ramirez Soto", guardado.Apellidos);
-        Assert.Equal(new DateTime(2010, 5, 20), guardado.FechaNacimiento);
+        Assert.Equal(new DateTime(2003, 5, 20), guardado.FechaNacimiento);
         Assert.Equal("3001234567", guardado.Telefono);
         Assert.Equal("pedro.ramirez@ejemplo.com", guardado.Email);
         Assert.Equal("Calle 1 # 2-3", guardado.Direccion);
-        Assert.Equal("7A", guardado.Grado);
+        Assert.Equal("Ingenieria de Sistemas", guardado.Carrera);
+        Assert.Equal(5, guardado.Semestre);
     }
 
     [Fact]
@@ -181,18 +184,20 @@ public class RepositorioMemoriaTests
             Documento = "5555555555",
             Nombres = "Pedro Jose",
             Apellidos = "Ramirez Soto",
-            FechaNacimiento = new DateTime(2011, 1, 1),
+            FechaNacimiento = new DateTime(2004, 1, 1),
             Telefono = "3009998877",
             Email = "nuevo@ejemplo.com",
             Direccion = "Carrera 9 # 8-7",
-            Grado = "8B"
+            Carrera = "Medicina",
+            Semestre = 8
         });
 
         var actualizado = Assert.Single(RepositorioMemoria.Listar());
         Assert.Equal("5555555555", actualizado.Documento);
         Assert.Equal("Pedro Jose", actualizado.Nombres);
         Assert.Equal("nuevo@ejemplo.com", actualizado.Email);
-        Assert.Equal("8B", actualizado.Grado);
+        Assert.Equal("Medicina", actualizado.Carrera);
+        Assert.Equal(8, actualizado.Semestre);
     }
 
     [Fact]

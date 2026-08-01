@@ -72,6 +72,7 @@ public class EstudianteTests
         Assert.Equal(string.Empty, e.Telefono);
         Assert.Equal(string.Empty, e.Email);
         Assert.Equal(string.Empty, e.Direccion);
-        Assert.Equal(string.Empty, e.Grado);
+        Assert.Equal(string.Empty, e.Carrera);
+        Assert.Equal(1, e.Semestre);
     }
 }

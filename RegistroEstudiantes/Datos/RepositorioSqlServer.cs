@@ -16,7 +16,7 @@ public static class RepositorioSqlServer
     /// </summary>
     private const string Columnas =
         "Id, Documento, Nombres, Apellidos, FechaNacimiento, " +
-        "Telefono, Email, Direccion, Grado, FechaRegistro";
+        "Telefono, Email, Direccion, Carrera, Semestre, FechaRegistro";
 
     /// <summary>
     /// Comprueba que se pueda abrir la conexion. Se llama al arrancar para
@@ -44,7 +44,7 @@ public static class RepositorioSqlServer
 
     /// <summary>
     /// Devuelve los estudiantes, opcionalmente filtrados por documento,
-    /// nombres o apellidos.
+    /// nombres, apellidos o carrera.
     /// </summary>
     public static List<Estudiante> Listar(string filtro = "")
     {
@@ -67,6 +67,7 @@ public static class RepositorioSqlServer
                 "WHERE Documento LIKE @filtro " +
                 "   OR Nombres   LIKE @filtro " +
                 "   OR Apellidos LIKE @filtro " +
+                "   OR Carrera   LIKE @filtro " +
                 "ORDER BY Apellidos, Nombres;";
 
             // El parametro evita inyeccion de SQL; los comodines se escapan
@@ -95,11 +96,11 @@ public static class RepositorioSqlServer
         comando.CommandText =
             "INSERT INTO dbo.Estudiantes " +
             "    (Documento, Nombres, Apellidos, FechaNacimiento, " +
-            "     Telefono, Email, Direccion, Grado, FechaRegistro) " +
+            "     Telefono, Email, Direccion, Carrera, Semestre, FechaRegistro) " +
             "OUTPUT INSERTED.Id " +
             "VALUES " +
             "    (@documento, @nombres, @apellidos, @fechaNacimiento, " +
-            "     @telefono, @email, @direccion, @grado, SYSDATETIME());";
+            "     @telefono, @email, @direccion, @carrera, @semestre, SYSDATETIME());";
 
         AgregarParametros(comando, e);
 
@@ -132,7 +133,8 @@ public static class RepositorioSqlServer
             "    Telefono        = @telefono, " +
             "    Email           = @email, " +
             "    Direccion       = @direccion, " +
-            "    Grado           = @grado " +
+            "    Carrera         = @carrera, " +
+            "    Semestre        = @semestre " +
             "WHERE Id = @id;";
 
         AgregarParametros(comando, e);
@@ -195,7 +197,8 @@ public static class RepositorioSqlServer
         comando.Parameters.AddWithValue("@telefono", e.Telefono.Trim());
         comando.Parameters.AddWithValue("@email", e.Email.Trim());
         comando.Parameters.AddWithValue("@direccion", e.Direccion.Trim());
-        comando.Parameters.AddWithValue("@grado", e.Grado.Trim());
+        comando.Parameters.AddWithValue("@carrera", e.Carrera.Trim());
+        comando.Parameters.AddWithValue("@semestre", e.Semestre);
     }
 
     private static Estudiante Mapear(SqlDataReader lector) => new()
@@ -208,8 +211,9 @@ public static class RepositorioSqlServer
         Telefono = lector.GetString(5),
         Email = lector.GetString(6),
         Direccion = lector.GetString(7),
-        Grado = lector.GetString(8),
-        FechaRegistro = lector.GetDateTime(9)
+        Carrera = lector.GetString(8),
+        Semestre = lector.GetByte(9),
+        FechaRegistro = lector.GetDateTime(10)
     };
 
     /// <summary>

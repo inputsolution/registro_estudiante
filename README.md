@@ -1,6 +1,7 @@
-# Registro de Estudiantes
+# Registro de Estudiantes Universitarios
 
-Aplicación de escritorio (Windows Forms, .NET 8) para registrar estudiantes.
+Aplicación de escritorio (Windows Forms, .NET 8) para registrar estudiantes
+de la universidad: datos personales, carrera y semestre.
 
 Los datos se guardan en **SQL Server**.
 
@@ -9,6 +10,10 @@ Los datos se guardan en **SQL Server**.
 **1. Crear la base de datos.** Abrir `scripts/01_crear_base_datos.sql` en SQL
 Server Management Studio y ejecutarlo una vez. Crea la base, la tabla y 12
 estudiantes de ejemplo. Se puede volver a ejecutar sin duplicar nada.
+
+> Si la base ya existía de la versión anterior (registro escolar, columna
+> `Grado`), ejecutar además `scripts/02_migrar_a_universidad.sql`: agrega
+> `Carrera` y `Semestre` y elimina `Grado` sin tocar el resto de los datos.
 
 **2. Revisar la conexión.** Está en `RegistroEstudiantes/appsettings.json`:
 
@@ -74,7 +79,7 @@ cd RegistroEstudiantes.Tests
 dotnet test
 ```
 
-135 casos sobre el repositorio, el modelo, las validaciones y la paginación.
+155 casos sobre el repositorio, el modelo, las validaciones y la paginación.
 Corren en cualquier sistema operativo y **no necesitan SQL Server**: usan el
 repositorio en memoria, que expone la misma interfaz.
 
@@ -84,20 +89,23 @@ Windows.
 
 ## Qué hace
 
-- Formulario con los datos básicos del estudiante (arriba)
+- Formulario con los datos del estudiante: documento, nombres, apellidos,
+  fecha de nacimiento, teléfono, email, dirección, carrera y semestre
 - Grilla con todos los registros (abajo)
 - Guardar, actualizar y eliminar
-- Búsqueda en vivo por documento, nombres o apellidos
+- Búsqueda en vivo por documento, nombres, apellidos o carrera
 - Paginación con selector de 10, 25, 50 o 100 filas por página
-- Validaciones: campos obligatorios, documento único, fecha coherente, y
-  formato de email, teléfono, documento y nombres
+- Validaciones: campos obligatorios, documento único, fecha coherente,
+  semestre entre 1 y 12, y formato de email, teléfono, documento, nombres
+  y carrera
 - Al seleccionar una fila, sus datos se cargan en el formulario para editar
 
 ## Estructura
 
 ```
 scripts/
-└── 01_crear_base_datos.sql        Crea base, tabla y datos de ejemplo
+├── 01_crear_base_datos.sql        Crea base, tabla y datos de ejemplo
+└── 02_migrar_a_universidad.sql    Migra una base de la versión escolar
 
 RegistroEstudiantes/
 ├── appsettings.json               Cadena de conexión

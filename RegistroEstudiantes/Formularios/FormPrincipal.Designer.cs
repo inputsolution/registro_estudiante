@@ -19,8 +19,10 @@ partial class FormPrincipal
     private TextBox txtEmail;
     private Label lblDireccion;
     private TextBox txtDireccion;
-    private Label lblGrado;
-    private TextBox txtGrado;
+    private Label lblCarrera;
+    private TextBox txtCarrera;
+    private Label lblSemestre;
+    private NumericUpDown nudSemestre;
 
     private Button btnGuardar;
     private Button btnNuevo;
@@ -70,8 +72,10 @@ partial class FormPrincipal
         txtEmail = new TextBox();
         lblDireccion = new Label();
         txtDireccion = new TextBox();
-        lblGrado = new Label();
-        txtGrado = new TextBox();
+        lblCarrera = new Label();
+        txtCarrera = new TextBox();
+        lblSemestre = new Label();
+        nudSemestre = new NumericUpDown();
         btnGuardar = new Button();
         btnNuevo = new Button();
         btnEliminar = new Button();
@@ -91,6 +95,7 @@ partial class FormPrincipal
 
         grupoDatos.SuspendLayout();
         panelPaginacion.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)nudSemestre).BeginInit();
         ((System.ComponentModel.ISupportInitialize)grid).BeginInit();
         barraEstado.SuspendLayout();
         SuspendLayout();
@@ -98,7 +103,7 @@ partial class FormPrincipal
         // ---------- Grupo de datos ----------
         grupoDatos.Text = "Datos del estudiante";
         grupoDatos.Location = new Point(12, 12);
-        grupoDatos.Size = new Size(860, 165);
+        grupoDatos.Size = new Size(860, 200);
         grupoDatos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
         // Fila 1
@@ -138,7 +143,7 @@ partial class FormPrincipal
         dtpFechaNacimiento.Location = new Point(110, 65);
         dtpFechaNacimiento.Size = new Size(160, 25);
         dtpFechaNacimiento.Format = DateTimePickerFormat.Short;
-        dtpFechaNacimiento.Value = new DateTime(2010, 1, 1);
+        dtpFechaNacimiento.Value = new DateTime(2000, 1, 1);
 
         lblTelefono.Text = "Telefono:";
         lblTelefono.Location = new Point(295, 68);
@@ -168,28 +173,40 @@ partial class FormPrincipal
         txtDireccion.Size = new Size(450, 25);
         txtDireccion.MaxLength = 120;
 
-        lblGrado.Text = "Grado:";
-        lblGrado.Location = new Point(580, 104);
-        lblGrado.Size = new Size(70, 20);
-        lblGrado.TextAlign = ContentAlignment.MiddleLeft;
+        // Fila 4: datos academicos
+        lblCarrera.Text = "Carrera:";
+        lblCarrera.Location = new Point(18, 140);
+        lblCarrera.Size = new Size(90, 20);
+        lblCarrera.TextAlign = ContentAlignment.MiddleLeft;
 
-        txtGrado.Location = new Point(655, 101);
-        txtGrado.Size = new Size(190, 25);
-        txtGrado.MaxLength = 30;
+        txtCarrera.Location = new Point(110, 137);
+        txtCarrera.Size = new Size(450, 25);
+        txtCarrera.MaxLength = 80;
+
+        lblSemestre.Text = "Semestre:";
+        lblSemestre.Location = new Point(580, 140);
+        lblSemestre.Size = new Size(70, 20);
+        lblSemestre.TextAlign = ContentAlignment.MiddleLeft;
+
+        nudSemestre.Location = new Point(655, 137);
+        nudSemestre.Size = new Size(70, 25);
+        nudSemestre.Minimum = 1;
+        nudSemestre.Maximum = 12;
+        nudSemestre.Value = 1;
 
         // Botones
         btnGuardar.Text = "Guardar";
-        btnGuardar.Location = new Point(110, 133);
+        btnGuardar.Location = new Point(110, 168);
         btnGuardar.Size = new Size(100, 28);
         btnGuardar.Click += BtnGuardar_Click;
 
         btnNuevo.Text = "Nuevo";
-        btnNuevo.Location = new Point(220, 133);
+        btnNuevo.Location = new Point(220, 168);
         btnNuevo.Size = new Size(100, 28);
         btnNuevo.Click += BtnNuevo_Click;
 
         btnEliminar.Text = "Eliminar";
-        btnEliminar.Location = new Point(330, 133);
+        btnEliminar.Location = new Point(330, 168);
         btnEliminar.Size = new Size(100, 28);
         btnEliminar.Click += BtnEliminar_Click;
 
@@ -202,25 +219,26 @@ partial class FormPrincipal
             lblTelefono, txtTelefono,
             lblEmail, txtEmail,
             lblDireccion, txtDireccion,
-            lblGrado, txtGrado,
+            lblCarrera, txtCarrera,
+            lblSemestre, nudSemestre,
             btnGuardar, btnNuevo, btnEliminar
         });
 
         // ---------- Buscador ----------
         lblBuscar.Text = "Buscar:";
-        lblBuscar.Location = new Point(12, 190);
+        lblBuscar.Location = new Point(12, 225);
         lblBuscar.Size = new Size(55, 20);
         lblBuscar.TextAlign = ContentAlignment.MiddleLeft;
 
-        txtBuscar.Location = new Point(70, 187);
+        txtBuscar.Location = new Point(70, 222);
         txtBuscar.Size = new Size(280, 25);
-        txtBuscar.PlaceholderText = "Documento, nombres o apellidos...";
+        txtBuscar.PlaceholderText = "Documento, nombres, apellidos o carrera...";
         txtBuscar.TextChanged += TxtBuscar_TextChanged;
 
         // ---------- Grilla ----------
         // Se reserva el espacio inferior para la barra de paginacion.
-        grid.Location = new Point(12, 220);
-        grid.Size = new Size(860, 264);
+        grid.Location = new Point(12, 255);
+        grid.Size = new Size(860, 229);
         grid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         grid.AllowUserToAddRows = false;
         grid.AllowUserToDeleteRows = false;
@@ -319,18 +337,19 @@ partial class FormPrincipal
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(884, 552);
-        MinimumSize = new Size(900, 590);
+        MinimumSize = new Size(900, 625);
         Controls.AddRange(new Control[]
         {
             grupoDatos, lblBuscar, txtBuscar, grid, panelPaginacion, barraEstado
         });
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "Registro de Estudiantes";
+        Text = "Registro de Estudiantes Universitarios";
         Load += FormPrincipal_Load;
 
         grupoDatos.ResumeLayout(false);
         grupoDatos.PerformLayout();
         panelPaginacion.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)nudSemestre).EndInit();
         ((System.ComponentModel.ISupportInitialize)grid).EndInit();
         barraEstado.ResumeLayout(false);
         ResumeLayout(false);

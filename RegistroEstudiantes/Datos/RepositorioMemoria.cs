@@ -42,132 +42,144 @@ public static class RepositorioMemoria
                 Documento = "1001234567",
                 Nombres = "Ana Maria",
                 Apellidos = "Torres Ruiz",
-                FechaNacimiento = new DateTime(2010, 3, 14),
+                FechaNacimiento = new DateTime(2003, 3, 14),
                 Telefono = "3001112233",
                 Email = "ana.torres@ejemplo.com",
                 Direccion = "Calle 12 # 4-56",
-                Grado = "7B"
+                Carrera = "Ingenieria de Sistemas",
+                Semestre = 6
             },
             new Estudiante
             {
                 Documento = "1007654321",
                 Nombres = "Carlos Andres",
                 Apellidos = "Gomez Diaz",
-                FechaNacimiento = new DateTime(2009, 11, 2),
+                FechaNacimiento = new DateTime(2001, 11, 2),
                 Telefono = "3104445566",
                 Email = "carlos.gomez@ejemplo.com",
                 Direccion = "Carrera 30 # 8-12",
-                Grado = "8A"
+                Carrera = "Medicina",
+                Semestre = 9
             },
             new Estudiante
             {
                 Documento = "1009887766",
                 Nombres = "Valentina",
                 Apellidos = "Alvarez Mesa",
-                FechaNacimiento = new DateTime(2011, 6, 25),
+                FechaNacimiento = new DateTime(2005, 6, 25),
                 Telefono = "3125558899",
                 Email = "valentina.alvarez@ejemplo.com",
                 Direccion = "Calle 45 # 22-10",
-                Grado = "6A"
+                Carrera = "Derecho",
+                Semestre = 2
             },
             new Estudiante
             {
                 Documento = "1002233445",
                 Nombres = "Juan Sebastian",
                 Apellidos = "Bermudez Pena",
-                FechaNacimiento = new DateTime(2008, 9, 8),
+                FechaNacimiento = new DateTime(2000, 9, 8),
                 Telefono = "3007776655",
                 Email = "juan.bermudez@ejemplo.com",
                 Direccion = "Avenida 3 # 15-40",
-                Grado = "9C"
+                Carrera = "Administracion de Empresas",
+                Semestre = 10
             },
             new Estudiante
             {
                 Documento = "1004455667",
                 Nombres = "Laura Sofia",
                 Apellidos = "Castro Nino",
-                FechaNacimiento = new DateTime(2010, 1, 30),
+                FechaNacimiento = new DateTime(2004, 1, 30),
                 Telefono = "3113334422",
                 Email = "laura.castro@ejemplo.com",
                 Direccion = "Carrera 18 # 60-05",
-                Grado = "7B"
+                Carrera = "Psicologia",
+                Semestre = 4
             },
             new Estudiante
             {
                 Documento = "1006677889",
                 Nombres = "Mateo",
                 Apellidos = "Duarte Salazar",
-                FechaNacimiento = new DateTime(2009, 4, 17),
+                FechaNacimiento = new DateTime(2002, 4, 17),
                 Telefono = "3189991122",
                 Email = "mateo.duarte@ejemplo.com",
                 Direccion = "Diagonal 27 # 9-33",
-                Grado = "8A"
+                Carrera = "Ingenieria Civil",
+                Semestre = 7
             },
             new Estudiante
             {
                 Documento = "1003344556",
                 Nombres = "Isabella",
                 Apellidos = "Herrera Lopez",
-                FechaNacimiento = new DateTime(2011, 12, 3),
+                FechaNacimiento = new DateTime(2006, 12, 3),
                 Telefono = "3162224433",
                 Email = "isabella.herrera@ejemplo.com",
                 Direccion = "Calle 8 # 31-77",
-                Grado = "6A"
+                Carrera = "Diseño Grafico",
+                Semestre = 1
             },
             new Estudiante
             {
                 Documento = "1008899001",
                 Nombres = "Santiago",
                 Apellidos = "Jimenez Rojas",
-                FechaNacimiento = new DateTime(2008, 7, 21),
+                FechaNacimiento = new DateTime(2000, 7, 21),
                 Telefono = "3145556677",
                 Email = "santiago.jimenez@ejemplo.com",
                 Direccion = "Transversal 5 # 40-18",
-                Grado = "9C"
+                Carrera = "Contaduria Publica",
+                Semestre = 8
             },
             new Estudiante
             {
                 Documento = "1005566778",
                 Nombres = "Camila Andrea",
                 Apellidos = "Moreno Vargas",
-                FechaNacimiento = new DateTime(2010, 10, 11),
+                FechaNacimiento = new DateTime(2003, 10, 11),
                 Telefono = "3208887744",
                 Email = "camila.moreno@ejemplo.com",
                 Direccion = "Carrera 50 # 12-90",
-                Grado = "7A"
+                Carrera = "Enfermeria",
+                Semestre = 5
             },
             new Estudiante
             {
                 Documento = "1000112233",
                 Nombres = "Nicolas",
                 Apellidos = "Ospina Guerrero",
-                FechaNacimiento = new DateTime(2009, 2, 5),
+                FechaNacimiento = new DateTime(2002, 2, 5),
                 Telefono = "3171113355",
                 Email = "nicolas.ospina@ejemplo.com",
                 Direccion = "Calle 33 # 7-21",
-                Grado = "8B"
+                Carrera = "Ingenieria de Sistemas",
+                Semestre = 7
             },
             new Estudiante
             {
                 Documento = "1002244668",
                 Nombres = "Sara Lucia",
                 Apellidos = "Quintero Marin",
-                FechaNacimiento = new DateTime(2011, 8, 29),
+                FechaNacimiento = new DateTime(2005, 8, 29),
                 Telefono = "3196668811",
                 Email = "sara.quintero@ejemplo.com",
                 Direccion = "Carrera 9 # 55-14",
-                Grado = "6B"
+                Carrera = "Comunicacion Social",
+                Semestre = 3
             },
             new Estudiante
             {
                 Documento = "1007788990",
                 Nombres = "Daniel Felipe",
                 Apellidos = "Rincon Cardenas",
-                FechaNacimiento = new DateTime(2008, 5, 19),
+                FechaNacimiento = new DateTime(2001, 5, 19),
                 Telefono = "3134447799",
                 Email = "daniel.rincon@ejemplo.com",
                 Direccion = "Avenida 68 # 24-06",
-                Grado = "9A"
+                Carrera = "Arquitectura",
+                Semestre = 9
             }
         };
 
@@ -179,7 +191,7 @@ public static class RepositorioMemoria
 
     /// <summary>
     /// Devuelve los estudiantes, opcionalmente filtrados por documento,
-    /// nombres o apellidos.
+    /// nombres, apellidos o carrera.
     /// </summary>
     public static List<Estudiante> Listar(string filtro = "")
     {
@@ -191,7 +203,8 @@ public static class RepositorioMemoria
             consulta = consulta.Where(e =>
                 e.Documento.Contains(f, StringComparison.OrdinalIgnoreCase) ||
                 e.Nombres.Contains(f, StringComparison.OrdinalIgnoreCase) ||
-                e.Apellidos.Contains(f, StringComparison.OrdinalIgnoreCase));
+                e.Apellidos.Contains(f, StringComparison.OrdinalIgnoreCase) ||
+                e.Carrera.Contains(f, StringComparison.OrdinalIgnoreCase));
         }
 
         return consulta
@@ -231,7 +244,8 @@ public static class RepositorioMemoria
         actual.Telefono = e.Telefono.Trim();
         actual.Email = e.Email.Trim();
         actual.Direccion = e.Direccion.Trim();
-        actual.Grado = e.Grado.Trim();
+        actual.Carrera = e.Carrera.Trim();
+        actual.Semestre = e.Semestre;
     }
 
     /// <summary>
@@ -264,7 +278,8 @@ public static class RepositorioMemoria
         Telefono = e.Telefono,
         Email = e.Email,
         Direccion = e.Direccion,
-        Grado = e.Grado,
+        Carrera = e.Carrera,
+        Semestre = e.Semestre,
         FechaRegistro = e.FechaRegistro
     };
 }

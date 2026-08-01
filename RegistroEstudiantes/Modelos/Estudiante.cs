@@ -1,7 +1,7 @@
 namespace RegistroEstudiantes.Modelos;
 
 /// <summary>
-/// Representa un estudiante del registro.
+/// Representa un estudiante universitario del registro.
 /// </summary>
 public class Estudiante
 {
@@ -21,7 +21,15 @@ public class Estudiante
 
     public string Direccion { get; set; } = string.Empty;
 
-    public string Grado { get; set; } = string.Empty;
+    /// <summary>
+    /// Programa academico que cursa, por ejemplo "Ingenieria de Sistemas".
+    /// </summary>
+    public string Carrera { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Semestre que cursa, de 1 a 12.
+    /// </summary>
+    public int Semestre { get; set; } = 1;
 
     public DateTime FechaRegistro { get; set; } = DateTime.Now;
 

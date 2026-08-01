@@ -138,11 +138,20 @@ public partial class FormPrincipal : Form
 
         grid.Columns.Add(new DataGridViewTextBoxColumn
         {
-            Name = "colGrado",
-            HeaderText = "Grado",
-            DataPropertyName = nameof(Estudiante.Grado),
-            FillWeight = 7,
-            MinimumWidth = 70,
+            Name = "colCarrera",
+            HeaderText = "Carrera",
+            DataPropertyName = nameof(Estudiante.Carrera),
+            FillWeight = 16,
+            MinimumWidth = 110
+        });
+
+        grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            Name = "colSemestre",
+            HeaderText = "Semestre",
+            DataPropertyName = nameof(Estudiante.Semestre),
+            FillWeight = 8,
+            MinimumWidth = 90,
             DefaultCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -303,7 +312,8 @@ public partial class FormPrincipal : Form
         txtTelefono.Text = seleccionado.Telefono;
         txtEmail.Text = seleccionado.Email;
         txtDireccion.Text = seleccionado.Direccion;
-        txtGrado.Text = seleccionado.Grado;
+        txtCarrera.Text = seleccionado.Carrera;
+        nudSemestre.Value = Math.Clamp(seleccionado.Semestre, (int)nudSemestre.Minimum, (int)nudSemestre.Maximum);
 
         btnGuardar.Text = "Actualizar";
         lblEstado.Text = $"Editando: {seleccionado.NombreCompleto}";
@@ -326,7 +336,8 @@ public partial class FormPrincipal : Form
             Telefono = txtTelefono.Text,
             Email = txtEmail.Text,
             Direccion = txtDireccion.Text,
-            Grado = txtGrado.Text
+            Carrera = txtCarrera.Text,
+            Semestre = (int)nudSemestre.Value
         };
 
         var esNuevo = _idEnEdicion == 0;
@@ -493,6 +504,27 @@ public partial class FormPrincipal : Form
             return false;
         }
 
+        if (string.IsNullOrWhiteSpace(txtCarrera.Text))
+        {
+            Advertir("La carrera es obligatoria.", txtCarrera);
+            return false;
+        }
+
+        if (!Validaciones.EsCarreraValida(txtCarrera.Text))
+        {
+            Advertir(
+                "La carrera solo admite letras, espacios, puntos y guiones, " +
+                "entre 3 y 80 caracteres.",
+                txtCarrera);
+            return false;
+        }
+
+        if (!Validaciones.EsSemestreValido((int)nudSemestre.Value))
+        {
+            Advertir("El semestre debe estar entre 1 y 12.", nudSemestre);
+            return false;
+        }
+
         try
         {
             if (RepositorioSqlServer.ExisteDocumento(txtDocumento.Text, _idEnEdicion))
@@ -541,11 +573,12 @@ public partial class FormPrincipal : Form
         txtDocumento.Clear();
         txtNombres.Clear();
         txtApellidos.Clear();
-        dtpFechaNacimiento.Value = new DateTime(2010, 1, 1);
+        dtpFechaNacimiento.Value = new DateTime(2000, 1, 1);
         txtTelefono.Clear();
         txtEmail.Clear();
         txtDireccion.Clear();
-        txtGrado.Clear();
+        txtCarrera.Clear();
+        nudSemestre.Value = 1;
 
         btnGuardar.Text = "Guardar";
         grid.ClearSelection();

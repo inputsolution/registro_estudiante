@@ -87,6 +87,30 @@ public static class Validaciones
     }
 
     /// <summary>
+    /// La carrera es obligatoria: letras, espacios y los signos habituales de
+    /// los nombres de programas academicos ("Diseño Grafico", "Administracion
+    /// de Empresas - Nocturna").
+    /// </summary>
+    public static bool EsCarreraValida(string? carrera)
+    {
+        var valor = carrera?.Trim() ?? string.Empty;
+
+        if (valor.Length is < 3 or > 80)
+        {
+            return false;
+        }
+
+        return valor.All(c => char.IsLetter(c) || c == ' ' || c == '.' || c == '-');
+    }
+
+    /// <summary>
+    /// El semestre va de 1 a 12, que cubre las carreras mas largas
+    /// (medicina llega a 12).
+    /// </summary>
+    public static bool EsSemestreValido(int semestre) =>
+        semestre is >= 1 and <= 12;
+
+    /// <summary>
     /// Nombres y apellidos: obligatorios, sin numeros.
     /// </summary>
     public static bool EsNombreValido(string? nombre)
